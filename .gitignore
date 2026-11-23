@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Production & Build outputs
+dist/
+*/dist/
+build/
+*/build/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+*.env
+
+# Local Databases & persistent caches
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+backend/prisma/*.db
+backend/prisma/*.db-journal
+backend/.chrome_data/
+
+# Temporary & Scratch files
+scratch/
+*/scratch/
+backend/scratch/
+*.log
+logs/
+
+# Python cache & environments
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# OS and Editor metadata
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/

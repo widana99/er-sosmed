@@ -1,0 +1,181 @@
+// Prisma Schema for Social Media Engagement Rate Analyzer
+// Compatible with SQLite (zero-config local dev) & PostgreSQL (Neon / Production)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ANALYST
+  VIEWER
+}
+
+enum Platform {
+  INSTAGRAM
+  TIKTOK
+  YOUTUBE
+  FACEBOOK
+}
+
+enum DataSource {
+  MANUAL
+  SIMULATED
+  CSV_IMPORT
+  API
+}
+
+enum FormulaType {
+  FOLLOWER_BASED
+  VIEW_BASED
+  REACH_BASED
+}
+
+model AdminUser {
+  id            String          @id @default(uuid())
+  name          String
+  email         String          @unique
+  passwordHash  String
+  role          String          @default("ADMIN") // ADMIN, ANALYST, VIEWER
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  searchHistory SearchHistory[]
+
+  @@map("admin_users")
+}
+
+model SocialAccount {
+  id           String            @id @default(uuid())
+  platform     String // INSTAGRAM, TIKTOK
+  username     String
+  displayName  String?
+  profileUrl   String?
+  avatarUrl    String?
+  accountType  String? // Creator, Business, Personal
+  city         String?           @default("Nasional") // Kota / Daerah (e.g. Jakarta, Surabaya, Bandung, dll.)
+  roleOrTitle  String?           @default("Jubir") // Peran / Kategori (e.g. Jubir Utama, Jubir Muda, Jubir Daerah)
+  joinedText   String?           // Mulai dari kapan / Page creation date / joined date
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  snapshots    AccountSnapshot[]
+  posts        SocialPost[]
+  analyses     AnalysisRun[]
+  batchItems   BatchGroupItem[]
+
+  @@unique([platform, username])
+  @@map("social_accounts")
+}
+
+model AccountSnapshot {
+  id          String        @id @default(uuid())
+  accountId   String
+  followers   Int           @default(0)
+  following   Int?          @default(0)
+  postsCount  Int?          @default(0)
+  capturedAt  DateTime      @default(now())
+  source      String        @default("MANUAL") // MANUAL, SIMULATED, CSV_IMPORT, API
+  account     SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("account_snapshots")
+}
+
+model SocialPost {
+  id         String        @id @default(uuid())
+  accountId  String
+  postUrl    String?
+  caption    String?
+  postedAt   DateTime      @default(now())
+  likes      Int           @default(0)
+  comments   Int           @default(0)
+  views      Int?
+  shares     Int?
+  saves      Int?
+  reach      Int?
+  contentType String?       @default("VIDEO")
+  source     String        @default("MANUAL") // MANUAL, SIMULATED, CSV_IMPORT, API
+  createdAt  DateTime      @default(now())
+  account    SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("social_posts")
+}
+
+model AnalysisRun {
+  id              String        @id @default(uuid())
+  accountId       String
+  formulaType     String        @default("FOLLOWER_BASED") // FOLLOWER_BASED, VIEW_BASED, REACH_BASED
+  sampleSize      Int           @default(0)
+  averageLikes    Float         @default(0)
+  averageComments Float         @default(0)
+  averageViews    Float?
+  averageShares   Float?
+  engagementRate  Float         @default(0)
+  source          String        @default("MANUAL") // MANUAL, SIMULATED, CSV_IMPORT, API
+  analyzedAt      DateTime      @default(now())
+  account         SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("analysis_runs")
+}
+
+model SearchHistory {
+  id           String     @id @default(uuid())
+  adminId      String?
+  platform     String // INSTAGRAM, TIKTOK
+  username     String
+  searchedAt   DateTime   @default(now())
+  resultStatus String // FOUND, NOT_FOUND
+  admin        AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@map("search_history")
+}
+
+model BatchGroup {
+  id                 String           @id @default(uuid())
+  name               String
+  category           String           @default("Umum")
+  platform           String           @default("ALL") // ALL, INSTAGRAM, TIKTOK
+  totalAccounts      Int              @default(0)
+  successfulAccounts Int              @default(0)
+  failedAccounts     Int              @default(0)
+  averageER          Float            @default(0)
+  totalFollowers     Int              @default(0)
+  status             String           @default("COMPLETED") // COMPLETED, PARTIAL, FAILED
+  metadata           String?          // JSON string
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  items              BatchGroupItem[]
+
+  @@map("batch_groups")
+}
+
+model BatchGroupItem {
+  id              String         @id @default(uuid())
+  groupId         String
+  accountId       String?
+  username        String
+  displayName     String?
+  avatarUrl       String?
+  platform        String         // INSTAGRAM, TIKTOK
+  status          String         @default("SUCCESS") // SUCCESS, RESTRICTED, NOT_FOUND, ERROR
+  followers       Int            @default(0)
+  following       Int            @default(0)
+  postsCount      Int            @default(0)
+  analyzedPosts   Int            @default(0)
+  averageLikes    Float          @default(0)
+  averageComments Float          @default(0)
+  averageViews    Float          @default(0)
+  averageShares   Float          @default(0)
+  engagementRate  Float          @default(0)
+  city            String?
+  roleOrTitle     String?
+  errorMessage    String?
+  createdAt       DateTime       @default(now())
+  group           BatchGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  account         SocialAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+
+  @@map("batch_group_items")
+}

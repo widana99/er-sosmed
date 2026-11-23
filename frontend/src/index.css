@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-canvas: #F6F7F9;
+    --surface-solid: #FFFFFF;
+    --surface-subtle: #F0F2F5;
+    --surface-hover: #F8FAFC;
+    --border-hairline: rgba(15, 23, 42, 0.08);
+    --border-hover: rgba(59, 130, 246, 0.35);
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-tertiary: #94A3B8;
+    --accent-brand: #2563EB;
+    --accent-brand-hover: #1D4ED8;
+    --accent-brand-subtle: #EFF6FF;
+  }
+
+  .dark {
+    --bg-canvas: #090D14;
+    --surface-solid: #0F1523;
+    --surface-subtle: #172033;
+    --surface-hover: #1A243A;
+    --border-hairline: rgba(255, 255, 255, 0.09);
+    --border-hover: rgba(96, 165, 250, 0.4);
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-tertiary: #64748B;
+    --accent-brand: #3B82F6;
+    --accent-brand-hover: #60A5FA;
+    --accent-brand-subtle: rgba(59, 130, 246, 0.12);
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.012em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  .tabular-nums {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Modern Fintech & Data Craft Card System */
+.craft-card {
+  background-color: var(--surface-solid);
+  border: 1px solid var(--border-hairline);
+  border-radius: 0.875rem; /* 14px */
+  box-shadow: 
+    0 1px 2px 0 rgba(0, 0, 0, 0.03),
+    0 6px 20px -4px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .craft-card {
+  background-color: var(--surface-solid);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 
+    0 1px 2px 0 rgba(0, 0, 0, 0.4),
+    0 10px 28px -6px rgba(0, 0, 0, 0.55);
+}
+
+.craft-card:hover {
+  border-color: var(--border-hover);
+}
+
+/* Crisp Input Field */
+.craft-input {
+  background-color: var(--surface-solid);
+  border: 1px solid var(--border-hairline);
+  border-radius: 0.625rem;
+  color: var(--text-primary);
+  transition: all 0.15s ease-out;
+}
+
+.craft-input:focus {
+  border-color: var(--accent-brand);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-brand-subtle);
+}
+
+/* Backward compatibility aliases */
+.neoglass, .card-surface {
+  background-color: var(--surface-solid);
+  border: 1px solid var(--border-hairline);
+  border-radius: 0.875rem;
+  box-shadow: 
+    0 1px 2px 0 rgba(0, 0, 0, 0.03),
+    0 6px 20px -4px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .neoglass, .dark .card-surface {
+  background-color: var(--surface-solid);
+  border: 1px solid var(--border-hairline);
+  box-shadow: 
+    0 1px 2px 0 rgba(0, 0, 0, 0.4),
+    0 10px 28px -6px rgba(0, 0, 0, 0.55);
+}
+
+/* Header subtle blur */
+.header-glass {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.dark .header-glass {
+  background-color: rgba(15, 21, 35, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+/* Smooth Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.35);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.35);
+}
+
+/* Accessibility: Prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
